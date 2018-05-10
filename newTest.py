@@ -11,23 +11,28 @@ class testInfo():
 	}
 
 	def __init__(self,url):
-		fp = open('num.txt','r')
+		self.__read_count()
 		self.url = url
+		self.lucky_num = int(re.findall(r"lucky_number=(.+?)&", url)[0])
+		self.cookies_list = []
+		self.__import_cookies()
+		self.num_of_cookies = len(self.cookies_list)
+
+	def __read_count(self):
+		fp = open('num.txt','r')
 		self.count = fp.readlines()[0].split('\n')[0]
 		fp.close()
-		self.lucky_num = re.findall(r"lucky_number=(.+?)&", url)
-		self.cookies_list = []
-		self.__init_other_cookies()
+
+	def __import_cookies(self):
+		fp = open('cookies.txt','r')
+		# each line in the file is a cookie
+		# initialize the cookie_list
+		for oneCookie in fp.readlines():
+			self.__append_cookie_list(oneCookie)  
+		fp.close()
 
 
-	def __init_other_cookies(self):
-		fc = open('cookies.txt','r')
-		for line in f.readlines():
-			self.__init_cookies_list(line)
-		fc.close()
-
-
-	def __init_cookies_list(self, cookies_str):
+	def __append_cookie_list(self, cookies_str):
 		cook_dict = {}
 		lines = cookies_str.split('; ')
 		for line in lines:
@@ -36,24 +41,57 @@ class testInfo():
 				cook_dict[key_and_value[0]] = key_and_value[1].split('\n')[0]
 		self.cookies_list.append(cook_dict)
 
-	def update_count(self, count):
+	def __update_count(self, newCount):
 		fp = open('num.txt','w')
-		fp.write(str(count))
+		fp.write(str(newCount))
 		fp.close()
 
+
+	# start from 0: with no check of number
 	def pureRun(self):
-		for i in range(lucky_number-1):
-			index = (int(i)+int(num))%9
-			oneRequest = newSim.HttpInfo(url, cookies)
-			oneRequest.makePost(self.url, cookies_list[index])
-		oneRequest = newSim.HttpInfo(self.url, self.my_cookies)
+		for i in range(self.lucky_num-1):
+			# mod 
+			index = (int(i)+int(self.count)) % self.num_of_cookies
+			hi = newSim.HttpInfo(self.url, self.cookies_list[index])
+			hi.makePost()
+			self.count = int(self.count) + 1
+		hi = newSim.HttpInfo(self.url, self.my_cookies)
+		hi.makePost()
+		amount = hi.getAmount()
+		print("You get: "+str(amount))
+		self.__update_count(self.count)
 
-		update_count(self.count)
+	def autoRun(self):
+		index = (int(self.count)) % self.num_of_cookies
+		self.count = int(self.count) + 1
 
-	def autoRun():
-		
-		pass
+		hi = newSim.HttpInfo(self.url, self.cookies_list[index])
+		hi.makePost()
+		used_num = hi.getNum()
+
+		if(used_num >= self.lucky_num):
+			print("Oops, No chance")
+			self.__update_count(self.count)
+			return used_num
+
+		rest_num = self.lucky_num - used_num
+
+		for i in range(rest_num-1):
+			index = (int(i)+int(self.count)) % self.num_of_cookies
+			hi = newSim.HttpInfo(self.url, self.cookies_list[index])
+			hi.makePost()
+			self.count = int(self.count) + 1
+
+		hi = newSim.HttpInfo(self.url, self.my_cookies)
+		hi.makePost()
+		amount = hi.getAmount()
+		print("Amount: "+str(amount))
+		self.__update_count(int(self.count))
 
 
+url = 'https://h5.ele.me/hongbao/#hardware_id=&is_lucky_group=True&lucky_number=9&track_id=&platform=4&sn=29f3cfb57fadf0ef&theme_id=2473&device_id=&refer_user_id=141201950'
+ti = testInfo(url)
+#ti.autoRun()
+ti.pureRun()
 
 #http = newSim.HttpInfo(url, cookies)
