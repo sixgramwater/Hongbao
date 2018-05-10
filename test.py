@@ -56,15 +56,45 @@ def start(url):
 	lucky_number = url_luckyNum(url)
 	for i in range(lucky_number-1):
 		sim.makePost(url, cookies_list[(int(i)+int(num))%9])
-	sim.makePost(url, my_cookies)
+		print("now: "+ str(i+1) +"/" + str(lucky_number))
+	content = sim.makePost(url, my_cookies)
+	amountList = re.findall(r'"amount":(.+?),"', content)
+	print("Amount: ￥"+str(amountList[0])+"")
+	#print(content)
 	writeNum(int(num) + int(lucky_number))
 	print("Process Complete!")
 
-def test(url):
-	print(url)
+def singleTest(url):
 	init()
 	num = readNum()
-	lucky_number = 7
+	lucky_number = url_luckyNum(url)
+	print("\n\nLoading...")
+	for i in range(lucky_number-1):
+		sim.makePost(url, cookies_list[(int(i)+int(num))%9])
+		#print(str(i+1) +"/" + str(lucky_number)+": success")
+		#print(str(int(100*(int(i+1)/int(lucky_number))))+"%",end="")
+		print("------"+str(int(100*(int(i+1)/int(lucky_number))))+"%")
+	print("------100%")
+	print("\n=================")
+	jsoninfo = sim.makePost(url, my_cookies)
+
+	#print(str(jsoninfo))
+	p_list = jsoninfo['promotion_items']
+	user_dict = p_list[0]
+	amount = user_dict['amount']
+	print("Amount: "+str(amount))
+	#amountList = re.findall(r'"amount":(.+?),"', content)
+	#print("Amount: ￥"+str(amountList[0])+"")
+	#print(content)
+	writeNum(int(num) + int(lucky_number))
+	print("Process Complete!")
+	print("=================\n")
+
+def test(url):
+	init()
+	num = readNum()
+	# 首先进行第一次测试
+	info = sim.makePost(url, cookies)
 	for i in range(lucky_number-1):
 		print("read:"+str((int(i)+int(num))%9))
 	writeNum(int(num)+ int(lucky_number)-1)
@@ -85,7 +115,8 @@ def autorun(url,now):
 	writeNum(int(num) + int(lucky_number))
 	print("Process Complete!")
 
-start(url)
+#start(url)
+singleTest(url)
 
 
 

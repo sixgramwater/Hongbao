@@ -51,6 +51,9 @@ def makeData_to_json(sn, sign):
 	jsonData = json.dumps(data)
 	return jsonData
 
+def getAmountList(content):
+	amountList = re.findall(r'"amount":(.+?),"', content)
+	return amountList
 
 
 def makePost(url, cookies):
@@ -61,7 +64,8 @@ def makePost(url, cookies):
 	jsonData = makeData_to_json(sn, sign)
 	headers = {'Host':'h5.ele.me','connection':'keep-alive','Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8','User-Agent':'Mozilla/5.0 (Linux; Android 6.0; PRO 6 Build/MRA58K; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/53.0.2785.49 Mobile MQQBrowser/6.2 TBS/043221 Safari/537.36 V1_AND_SQ_7.0.0_676_YYB_D QQ/7.0.0.3135 NetType/WIFI WebP/0.3.0 Pixel/1080','Content-Type':'text/plain;charset=UTF-8','Referer':'https://h5.ele.me/hongbao/'}
 	r = requests.post(postUrl, data = jsonData, cookies=cookies, headers=headers)
-	print(r.content)
+	return r.json()
+	#print(r.content)
 
 
 # url3 = 'https://h5.ele.me/hongbao/#hardware_id=&is_lucky_group=True&lucky_number=5&track_id=&platform=4&sn=29efd165bf2fb082&theme_id=569&device_id=&refer_user_id=1461052906'
