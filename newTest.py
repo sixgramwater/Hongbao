@@ -1,19 +1,37 @@
 import newSim
 import re
 import sys
+import requests
 
 class testInfo():
 	my_cookies = {
-		'_utrace':'0d95f3a965e4bf8a1d852cd852b0e1e9_2018-05-01',
-		'snsInfo[101204453]':"%7B%22city%22%3A%22%22%2C%22eleme_key%22%3A%229d75e8f3dd1eee495f1ff4b3398118ab%22%2C%22figureurl%22%3A%22http%3A%2F%2Fqzapp.qlogo.cn%2Fqzapp%2F101204453%2F91D6A122F4F5CA321EE90553C25A48DC%2F30%22%2C%22figureurl_1%22%3A%22http%3A%2F%2Fqzapp.qlogo.cn%2Fqzapp%2F101204453%2F91D6A122F4F5CA321EE90553C25A48DC%2F50%22%2C%22figureurl_2%22%3A%22http%3A%2F%2Fqzapp.qlogo.cn%2Fqzapp%2F101204453%2F91D6A122F4F5CA321EE90553C25A48DC%2F100%22%2C%22figureurl_qq_1%22%3A%22http%3A%2F%2Fthirdqq.qlogo.cn%2Fqqapp%2F101204453%2F91D6A122F4F5CA321EE90553C25A48DC%2F40%22%2C%22figureurl_qq_2%22%3A%22http%3A%2F%2Fthirdqq.qlogo.cn%2Fqqapp%2F101204453%2F91D6A122F4F5CA321EE90553C25A48DC%2F100%22%2C%22gender%22%3A%22%E7%94%B7%22%2C%22is_lost%22%3A0%2C%22is_yellow_vip%22%3A%220%22%2C%22is_yellow_year_vip%22%3A%220%22%2C%22level%22%3A%220%22%2C%22msg%22%3A%22%22%2C%22nickname%22%3A%22%2Blf%22%2C%22openid%22%3A%2291D6A122F4F5CA321EE90553C25A48DC%22%2C%22province%22%3A%22%22%2C%22ret%22%3A0%2C%22vip%22%3A%220%22%2C%22year%22%3A%220%22%2C%22yellow_vip_level%22%3A%220%22%2C%22name%22%3A%22%2Blf%22%2C%22avatar%22%3A%22http%3A%2F%2Fthirdqq.qlogo.cn%2Fqqapp%2F101204453%2F91D6A122F4F5CA321EE90553C25A48DC%2F40%22%7D",
-		'ubt_ssid':'sbwha5weklal1cs6qbfo2t49yfs3gl8m_2018-05-01',
-		'perf_ssid':'4y2y59ew66xfgvqjlbufhq57axc2bo3k_2018-05-01'
+	 '_utrace':'0d95f3a965e4bf8a1d852cd852b0e1e9_2018-05-01',
+	 'snsInfo[101204453]':"%7B%22city%22%3A%22%22%2C%22eleme_key%22%3A%229d75e8f3dd1eee495f1ff4b3398118ab%22%2C%22figureurl%22%3A%22http%3A%2F%2Fqzapp.qlogo.cn%2Fqzapp%2F101204453%2F91D6A122F4F5CA321EE90553C25A48DC%2F30%22%2C%22figureurl_1%22%3A%22http%3A%2F%2Fqzapp.qlogo.cn%2Fqzapp%2F101204453%2F91D6A122F4F5CA321EE90553C25A48DC%2F50%22%2C%22figureurl_2%22%3A%22http%3A%2F%2Fqzapp.qlogo.cn%2Fqzapp%2F101204453%2F91D6A122F4F5CA321EE90553C25A48DC%2F100%22%2C%22figureurl_qq_1%22%3A%22http%3A%2F%2Fthirdqq.qlogo.cn%2Fqqapp%2F101204453%2F91D6A122F4F5CA321EE90553C25A48DC%2F40%22%2C%22figureurl_qq_2%22%3A%22http%3A%2F%2Fthirdqq.qlogo.cn%2Fqqapp%2F101204453%2F91D6A122F4F5CA321EE90553C25A48DC%2F100%22%2C%22gender%22%3A%22%E7%94%B7%22%2C%22is_lost%22%3A0%2C%22is_yellow_vip%22%3A%220%22%2C%22is_yellow_year_vip%22%3A%220%22%2C%22level%22%3A%220%22%2C%22msg%22%3A%22%22%2C%22nickname%22%3A%22%2Blf%22%2C%22openid%22%3A%2291D6A122F4F5CA321EE90553C25A48DC%22%2C%22province%22%3A%22%22%2C%22ret%22%3A0%2C%22vip%22%3A%220%22%2C%22year%22%3A%220%22%2C%22yellow_vip_level%22%3A%220%22%2C%22name%22%3A%22%2Blf%22%2C%22avatar%22%3A%22http%3A%2F%2Fthirdqq.qlogo.cn%2Fqqapp%2F101204453%2F91D6A122F4F5CA321EE90553C25A48DC%2F40%22%7D",
+	 'ubt_ssid':'sbwha5weklal1cs6qbfo2t49yfs3gl8m_2018-05-01',
+	 'perf_ssid':'4y2y59ew66xfgvqjlbufhq57axc2bo3k_2018-05-01'
 	}
-	
 
-	def __init__(self,url):
+	def short2long(self, url):
+		headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0"}
+		s = requests.session()
+		r = s.get(url, headers=headers, allow_redirects=True)
+		pre_req = r.request
+		return pre_req.url
+
+	def isShortUrl(self, url):
+		return (re.search("url.cn",url) == None)
+
+
+	def checkAndModify(self, url):
+		if(self.isShortUrl(url)==True):
+			new_url = self.short2long(url)
+		else:
+			new_url = url
+		return new_url
+
+	def __init__(self, url):
 		self.__read_count()
-		self.url = url
+		self.url = self.checkAndModify(url)
 		self.lucky_num = int(re.findall(r"lucky_number=(.+?)&", url)[0])
 		self.cookies_list = []
 		self.__import_cookies()
@@ -29,7 +47,7 @@ class testInfo():
 		# each line in the file is a cookie
 		# initialize the cookie_list
 		for oneCookie in fp.readlines():
-			self.__append_cookie_list(oneCookie)  
+			self.__append_cookie_list(oneCookie)
 		fp.close()
 
 
@@ -51,7 +69,7 @@ class testInfo():
 	# start from 0: with no check of number
 	def pureRun(self):
 		for i in range(self.lucky_num-1):
-			# mod 
+			# mod
 			index = (int(i)+int(self.count)) % self.num_of_cookies
 			hi = newSim.HttpInfo(self.url, self.cookies_list[index])
 			hi.makePost()
@@ -81,6 +99,7 @@ class testInfo():
 		for i in range(rest_num-1):
 			index = (int(i)+int(self.count)) % self.num_of_cookies
 			hi = newSim.HttpInfo(self.url, self.cookies_list[index])
+			print(index)
 			hi.makePost()
 			self.count = int(self.count) + 1
 
@@ -90,32 +109,33 @@ class testInfo():
 		print("Amount: "+str(amount))
 		self.__update_count(int(self.count))
 
-	def test(self):
-		index = (int(self.count)) % self.num_of_cookies
-		self.count = int(self.count) + 1
+	# def test(self):
+	#     index = (int(self.count)) % self.num_of_cookies
+	#     self.count = int(self.count) + 1
 
-		hi = newSim.HttpInfo(self.url, self.cookies_list[index])
-		hi.makePost()
-		used_num = hi.getNum()
-		print("used_num:"+str(used_num))
+	#     hi = newSim.HttpInfo(self.url, self.cookies_list[index])
+	#     hi.makePost()
+	#     used_num = hi.getNum()
+	#     print("used_num:"+str(used_num))
 
-		if(used_num >= self.lucky_num):
-			print("Oops, No chance.")
-			self.__update_count(self.count)
+	#     if(used_num >= 10):
+	#         print("Oops, No chance.")
+	#         self.__update_count(self.count)
 
-		rest_num = self.lucky_num - used_num
-		print("rest_num:"+str(rest_num))
+	#     rest_num = 10 - used_num
+	#     print("rest_num:"+str(rest_num))
 
-		for i in range(rest_num-1):
-			print(str(i))
+	#     for i in range(rest_num-1):
+	#         index = (int(i)+int(self.count)) % self.num_of_cookies
+	#         print(index)
 
-		print("the last one")
+	#     print("my")
 
-		#hi = newSim.HttpInfo(self.url, self.my_cookies)
-		#hi.makePost()
-		#amount = hi.getAmount()
-		#print("Amount: "+str(amount))
-		self.__update_count(int(self.count))
+	#     #hi = newSim.HttpInfo(self.url, self.my_cookies)
+	#     #hi.makePost()
+	#     #amount = hi.getAmount()
+	#     #print("Amount: "+str(amount))
+	#     self.__update_count(int(self.count))
 
 
 
@@ -140,17 +160,46 @@ class testInfo():
 			hi.makePost()
 			self.count = int(self.count) + 1
 
+
 		hi = newSim.HttpInfo(self.url, self.my_cookies)
+		if(phone != "136515156277"):
+			hi.updatePhone(phone)
 		hi.makePost()
 		amount = hi.getAmount()
 		print("Amount: "+str(amount))
 		self.__update_count(int(self.count))
 
+
+# def short2long(url):
+#     headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0"}
+#     s = requests.session()
+#     r = s.get(url, headers=headers, allow_redirects=True)
+#     pre_req = r.request
+#     return pre_req.url
+
+# def isShortUrl(url):
+#     match = re.search("url.cn",url)
+#     if match == None:
+#         return False
+#     else:
+#         return True
+
+# def checkAndModify(url):
+#     if(isShortUrl(url)==True):
+#         new_url = short2long(url)
+#     else:
+#         new_url = url
+#     return new_url
+
+# surl = "https://url.cn/5lqqNOz"
+# url = 'https://h5.ele.me/hongbao/#hardware_id=&is_lucky_group=True&lucky_number=6&track_id=&platform=4&sn=29f58e21ee2df037&theme_id=1881&device_id=&refer_user_id=141201950'
+# checkAndModify(surl)
+#short2long(surl)
 #url = sys.argv[1]
-url = 'https://h5.ele.me/hongbao/#hardware_id=&is_lucky_group=True&lucky_number=9&track_id=&platform=4&sn=29f5766e5aadf0fe&theme_id=1881&device_id=&refer_user_id=141201950'
-ti = testInfo(url)
+# url = 'https://h5.ele.me/hongbao/#hardware_id=&is_lucky_group=True&lucky_number=9&track_id=&platform=4&sn=29f5766e5aadf0fe&theme_id=1881&device_id=&refer_user_id=141201950'
+#ti = testInfo(url)
 #ti.test()
-ti.autoRun()
+# ti.autoRun()
 #ti.pureRun()
 
 #http = newSim.HttpInfo(url, cookies)

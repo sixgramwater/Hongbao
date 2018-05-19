@@ -47,7 +47,7 @@ class HttpInfo:
 		data = {"sign": self.sign,"phone": phone}
 		put_data = json.dumps(data)
 		print(put_data)
-		r = requests.put(put_url, data=put_data, cookies=self.cookies)
+		requests.put(put_url, data=put_data, cookies=self.cookies)
 
 
 #test code
