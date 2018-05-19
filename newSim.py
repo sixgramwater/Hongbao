@@ -46,7 +46,7 @@ class HttpInfo:
 		put_url = "https://h5.ele.me/restapi/v1/weixin/" + self.openid + "/phone"
 		data = {"sign": self.sign,"phone": phone}
 		put_data = json.dumps(data)
-		print(put_data)
+		#print(put_data)
 		requests.put(put_url, data=put_data, cookies=self.cookies)
 
 

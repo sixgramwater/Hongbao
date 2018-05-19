@@ -19,7 +19,7 @@ class testInfo():
 		return pre_req.url
 
 	def isShortUrl(self, url):
-		return (re.search("url.cn",url) == None)
+		return (re.search("url.cn",url) != None)
 
 
 	def checkAndModify(self, url):
@@ -32,7 +32,8 @@ class testInfo():
 	def __init__(self, url):
 		self.__read_count()
 		self.url = self.checkAndModify(url)
-		self.lucky_num = int(re.findall(r"lucky_number=(.+?)&", url)[0])
+		print(self.url)
+		self.lucky_num = int(re.findall(r"lucky_number=(.+?)&", self.url)[0])
 		self.cookies_list = []
 		self.__import_cookies()
 		self.num_of_cookies = len(self.cookies_list)
@@ -88,118 +89,68 @@ class testInfo():
 		hi = newSim.HttpInfo(self.url, self.cookies_list[index])
 		hi.makePost()
 		used_num = hi.getNum()
-		print(used_num)
+		print("used:" + str(used_num))
+		print("sum:"+str(self.lucky_num))
 		if(int(used_num) >= int(self.lucky_num)):
-			print("Oops, No chance.")
+			print("Sorry, None Left!")
 			self.__update_count(self.count)
 			return used_num
-
 		rest_num = self.lucky_num - used_num
+		print("rest:"+str(rest_num))
 
 		for i in range(rest_num-1):
-			index = (int(i)+int(self.count)) % self.num_of_cookies
+			index = (int(self.count)) % self.num_of_cookies
 			hi = newSim.HttpInfo(self.url, self.cookies_list[index])
-			print(index)
+			print("This is the "+str(i+1) + "try. [index: "+str(index)+"]")
 			hi.makePost()
 			self.count = int(self.count) + 1
 
 		hi = newSim.HttpInfo(self.url, self.my_cookies)
 		hi.makePost()
+		print("This is the last try.")
 		amount = hi.getAmount()
 		print("Amount: "+str(amount))
 		self.__update_count(int(self.count))
 
-	# def test(self):
-	#     index = (int(self.count)) % self.num_of_cookies
-	#     self.count = int(self.count) + 1
-
-	#     hi = newSim.HttpInfo(self.url, self.cookies_list[index])
-	#     hi.makePost()
-	#     used_num = hi.getNum()
-	#     print("used_num:"+str(used_num))
-
-	#     if(used_num >= 10):
-	#         print("Oops, No chance.")
-	#         self.__update_count(self.count)
-
-	#     rest_num = 10 - used_num
-	#     print("rest_num:"+str(rest_num))
-
-	#     for i in range(rest_num-1):
-	#         index = (int(i)+int(self.count)) % self.num_of_cookies
-	#         print(index)
-
-	#     print("my")
-
-	#     #hi = newSim.HttpInfo(self.url, self.my_cookies)
-	#     #hi.makePost()
-	#     #amount = hi.getAmount()
-	#     #print("Amount: "+str(amount))
-	#     self.__update_count(int(self.count))
 
 
-
-	def advanceRun(self, phone="13651516277"):
+	def advanceRun(self, phone):
 		index = (int(self.count)) % self.num_of_cookies
+		print(index)
 		self.count = int(self.count) + 1
 
 		hi = newSim.HttpInfo(self.url, self.cookies_list[index])
 		hi.makePost()
 		used_num = hi.getNum()
-
-		if(used_num >= self.lucky_num):
-			print("Oops, No chance.")
+		print("used:" + str(used_num))
+		print("sum:" + str(self.lucky_num))
+		if (int(used_num) >= int(self.lucky_num)):
+			print("Sorry, None Left!")
 			self.__update_count(self.count)
 			return used_num
-
 		rest_num = self.lucky_num - used_num
+		print("rest:" + str(rest_num))
 
-		for i in range(rest_num-1):
-			index = (int(i)+int(self.count)) % self.num_of_cookies
+		for i in range(rest_num - 1):
+			index = (int(self.count)) % self.num_of_cookies
 			hi = newSim.HttpInfo(self.url, self.cookies_list[index])
+			print("This is the No." + str(i + 1) + " try. [index: " + str(index) +
+				  "]")
 			hi.makePost()
 			self.count = int(self.count) + 1
 
-
 		hi = newSim.HttpInfo(self.url, self.my_cookies)
-		if(phone != "136515156277"):
-			hi.updatePhone(phone)
+		hi.updatePhone(phone)
+		print("Now updating phone to : " + phone)
 		hi.makePost()
+		print("This is the last try.")
 		amount = hi.getAmount()
-		print("Amount: "+str(amount))
+		print("Amount: " + str(amount))
 		self.__update_count(int(self.count))
 
 
-# def short2long(url):
-#     headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0"}
-#     s = requests.session()
-#     r = s.get(url, headers=headers, allow_redirects=True)
-#     pre_req = r.request
-#     return pre_req.url
-
-# def isShortUrl(url):
-#     match = re.search("url.cn",url)
-#     if match == None:
-#         return False
-#     else:
-#         return True
-
-# def checkAndModify(url):
-#     if(isShortUrl(url)==True):
-#         new_url = short2long(url)
-#     else:
-#         new_url = url
-#     return new_url
-
-# surl = "https://url.cn/5lqqNOz"
-# url = 'https://h5.ele.me/hongbao/#hardware_id=&is_lucky_group=True&lucky_number=6&track_id=&platform=4&sn=29f58e21ee2df037&theme_id=1881&device_id=&refer_user_id=141201950'
-# checkAndModify(surl)
-#short2long(surl)
-#url = sys.argv[1]
+url = sys.argv[1]
+phone = "15925650514"
 # url = 'https://h5.ele.me/hongbao/#hardware_id=&is_lucky_group=True&lucky_number=9&track_id=&platform=4&sn=29f5766e5aadf0fe&theme_id=1881&device_id=&refer_user_id=141201950'
-#ti = testInfo(url)
-#ti.test()
-# ti.autoRun()
-#ti.pureRun()
-
-#http = newSim.HttpInfo(url, cookies)
+ti = testInfo(url)
+ti.advanceRun(phone)
