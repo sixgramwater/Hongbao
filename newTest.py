@@ -9,6 +9,7 @@ class testInfo():
 		'ubt_ssid':'sbwha5weklal1cs6qbfo2t49yfs3gl8m_2018-05-01',
 		'perf_ssid':'4y2y59ew66xfgvqjlbufhq57axc2bo3k_2018-05-01'
 	}
+	
 
 	def __init__(self,url):
 		self.__read_count()
@@ -58,19 +59,20 @@ class testInfo():
 		hi = newSim.HttpInfo(self.url, self.my_cookies)
 		hi.makePost()
 		amount = hi.getAmount()
-		print("You get: "+str(amount))
+		print("Amount: "+str(amount))
 		self.__update_count(self.count)
 
 	def autoRun(self):
 		index = (int(self.count)) % self.num_of_cookies
+		print(index)
 		self.count = int(self.count) + 1
 
 		hi = newSim.HttpInfo(self.url, self.cookies_list[index])
 		hi.makePost()
 		used_num = hi.getNum()
-
-		if(used_num >= self.lucky_num):
-			print("Oops, No chance")
+		print(used_num)
+		if(int(used_num) >= int(self.lucky_num)):
+			print("Oops, No chance.")
 			self.__update_count(self.count)
 			return used_num
 
@@ -88,10 +90,67 @@ class testInfo():
 		print("Amount: "+str(amount))
 		self.__update_count(int(self.count))
 
+	def test(self):
+		index = (int(self.count)) % self.num_of_cookies
+		self.count = int(self.count) + 1
 
-url = 'https://h5.ele.me/hongbao/#hardware_id=&is_lucky_group=True&lucky_number=9&track_id=&platform=4&sn=29f3cfb57fadf0ef&theme_id=2473&device_id=&refer_user_id=141201950'
+		hi = newSim.HttpInfo(self.url, self.cookies_list[index])
+		hi.makePost()
+		used_num = hi.getNum()
+		print("used_num:"+str(used_num))
+
+		if(used_num >= self.lucky_num):
+			print("Oops, No chance.")
+			self.__update_count(self.count)
+
+		rest_num = self.lucky_num - used_num
+		print("rest_num:"+str(rest_num))
+
+		for i in range(rest_num-1):
+			print(str(i))
+
+		print("the last one")
+
+		#hi = newSim.HttpInfo(self.url, self.my_cookies)
+		#hi.makePost()
+		#amount = hi.getAmount()
+		#print("Amount: "+str(amount))
+		self.__update_count(int(self.count))
+
+
+
+	def advanceRun(self, phone="13651516277"):
+		index = (int(self.count)) % self.num_of_cookies
+		self.count = int(self.count) + 1
+
+		hi = newSim.HttpInfo(self.url, self.cookies_list[index])
+		hi.makePost()
+		used_num = hi.getNum()
+
+		if(used_num >= self.lucky_num):
+			print("Oops, No chance.")
+			self.__update_count(self.count)
+			return used_num
+
+		rest_num = self.lucky_num - used_num
+
+		for i in range(rest_num-1):
+			index = (int(i)+int(self.count)) % self.num_of_cookies
+			hi = newSim.HttpInfo(self.url, self.cookies_list[index])
+			hi.makePost()
+			self.count = int(self.count) + 1
+
+		hi = newSim.HttpInfo(self.url, self.my_cookies)
+		hi.makePost()
+		amount = hi.getAmount()
+		print("Amount: "+str(amount))
+		self.__update_count(int(self.count))
+
+#url = sys.argv[1]
+url = 'https://h5.ele.me/hongbao/#hardware_id=&is_lucky_group=True&lucky_number=9&track_id=&platform=4&sn=29f5766e5aadf0fe&theme_id=1881&device_id=&refer_user_id=141201950'
 ti = testInfo(url)
-#ti.autoRun()
-ti.pureRun()
+#ti.test()
+ti.autoRun()
+#ti.pureRun()
 
 #http = newSim.HttpInfo(url, cookies)

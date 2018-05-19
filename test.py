@@ -78,7 +78,7 @@ def singleTest(url):
 	print("\n=================")
 	jsoninfo = sim.makePost(url, my_cookies)
 
-	print(str(jsoninfo))
+	#print(str(jsoninfo))
 	p_list = jsoninfo['promotion_items']
 	user_dict = p_list[0]
 	amount = user_dict['amount']

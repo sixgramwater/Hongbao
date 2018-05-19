@@ -19,8 +19,6 @@ class HttpInfo:
 		self.predata['group_sn'] = self.sn
 		self.predata['sign'] = self.sign
 		self.jsonData = json.dumps(HttpInfo.predata)
-		#self.backInfo = ""
-		#self.amountList = []
 
 	def makePost(self):
 		r = requests.post(self.post_url, data = self.jsonData, cookies=self.cookies, headers=HttpInfo.headers)
@@ -44,7 +42,12 @@ class HttpInfo:
 		p_list = self.jsonInfo['promotion_records']
 		return(len(p_list))
 
-
+	def updatePhone(self, phone):
+		put_url = "https://h5.ele.me/restapi/v1/weixin/" + self.openid + "/phone"
+		data = {"sign": self.sign,"phone": phone}
+		put_data = json.dumps(data)
+		print(put_data)
+		r = requests.put(put_url, data=put_data, cookies=self.cookies)
 
 
 #test code
@@ -57,9 +60,10 @@ class HttpInfo:
 # url = 'https://h5.ele.me/hongbao/#hardware_id=&is_lucky_group=True&lucky_number=9&track_id=&platform=4&sn=29f3cfb57fadf0ef&theme_id=2473&device_id=&refer_user_id=141201950'
 
 # hi = HttpInfo(url, my_cookies)
-# hi.makePost()
-# print(hi.getAmount())
-# print(hi.getNum())
+# hi.updatePhone("13651516277")
+#hi.makePost()
+#print(hi.getAmount())
+#print(hi.getNum())
 
 
 
