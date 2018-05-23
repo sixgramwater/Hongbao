@@ -1,5 +1,0 @@
-#!/bin/bash
-cd /Users/liuke/Desktop/Demo
-python3 newTest.py $1
-echo "Complete"
-
